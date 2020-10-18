@@ -1,14 +1,26 @@
-import { MikroORM } from "@mikro-orm/core"
+import { MikroORM } from "@mikro-orm/core";
+import { __prod__ } from "./constants";
+import { Post } from "./entities/Post"
 
 const main = async () => {
   const orm = await MikroORM.init({
+    entities: [ Post ],
     dbName: 'lireddit',
     user: 'lireddit',
     password: 'lireddit',
     type: 'postgresql',
-    debug: process.env.NODE_ENV !== 'production'
+    debug: !__prod__
   })
-  console.log(orm)
+
+  const post = orm.em.create(Post, {title: 'My first post'})
+  await orm.em.persistAndFlush(post)
+
+
+  console.log('------ sql 2 ------')
+  await orm.em.nativeInsert(Post, {title: 'My SECOND post'})
+
 }
 
-main()
+main().catch( err => {
+  console.error(err)
+});
