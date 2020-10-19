@@ -30,7 +30,7 @@ export class PostResolver {
   @Mutation(() => Post, {nullable: true})
   async updatePost(
     @Arg("id") id: number,
-    @Arg("title", () => String, {nullable: true}) title: string
+    @Arg("title", () => String, {nullable: true}) title: string,
     @Ctx() { em }: MyContext
   ): Promise<Post | null> {
     const post = await em.findOne(Post, { id })
